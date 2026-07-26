@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.venv/
+env/
+venv/
+
+# Build & Next.js
+.next/
+dist/
+build/
+out/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Model checkpoints & generated artifacts
+*.joblib
+*.pkl
+saved_models/*
+!saved_models/.gitkeep
+
+reports/*
+!reports/.gitkeep
+
+# Environment variables & DBs
+.env
+.env.local
+.env.development.local
+.env.production.local
+*.db
+*.sqlite
+
+# OS artifacts
+.DS_Store
+Thumbs.db
