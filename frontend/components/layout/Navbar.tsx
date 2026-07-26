@@ -1,6 +1,6 @@
 "use client";
 
-import { Filter, Download, Bell, User } from "lucide-react";
+import { Filter, Download, User } from "lucide-react";
 import { useState } from "react";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
@@ -17,13 +17,15 @@ export function Navbar({ selectedPlant = "ALL", onPlantChange }: NavbarProps) {
     try {
       setDownloading(true);
       const res = await api.downloadReport('pdf', selectedPlant);
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `Industrial_Material_Report_${selectedPlant}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
       toast.success("Executive PDF report downloaded successfully!");
     } catch (err) {
       toast.error("Failed to generate PDF report.");
@@ -56,7 +58,7 @@ export function Navbar({ selectedPlant = "ALL", onPlantChange }: NavbarProps) {
         <button
           onClick={handleQuickDownload}
           disabled={downloading}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-sky-500/20 transition duration-200 disabled:opacity-50"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-sky-500/20 transition duration-200 disabled:opacity-50 cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" />
           <span>{downloading ? "Generating..." : "Quick PDF Report"}</span>

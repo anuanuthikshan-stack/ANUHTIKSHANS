@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Card } from "@/components/ui/Card";
 import { api } from "@/lib/api-client";
-import { FileSpreadsheet, Download, FileText, CheckCircle2 } from "lucide-react";
+import { FileSpreadsheet, Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ReportsPage() {
@@ -16,14 +16,24 @@ export default function ReportsPage() {
     try {
       setDownloadingFormat(format);
       const res = await api.downloadReport(format, selectedPlant, horizon);
-      const ext = format === 'excel' ? 'xlsx' : format;
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      
+      const mimeTypes: Record<string, string> = {
+        pdf: 'application/pdf',
+        excel: 'application/vnd.ms-excel',
+        csv: 'text/csv'
+      };
+
+      const ext = format === 'excel' ? 'xls' : format;
+      const blob = new Blob([res.data], { type: mimeTypes[format] });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `industrial_material_report_${selectedPlant}_${horizon}m.${ext}`);
+      link.setAttribute('download', `Industrial_Material_Report_${selectedPlant}_${horizon}m.${ext}`);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
+      
       toast.success(`${format.toUpperCase()} report downloaded successfully!`);
     } catch (err) {
       toast.error(`Failed to download ${format.toUpperCase()} report.`);
@@ -59,7 +69,7 @@ export default function ReportsPage() {
             <button
               onClick={() => handleDownload('pdf')}
               disabled={downloadingFormat === 'pdf'}
-              className="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>{downloadingFormat === 'pdf' ? "Generating PDF..." : "Download PDF Report"}</span>
@@ -74,16 +84,16 @@ export default function ReportsPage() {
               </div>
               <h2 className="text-lg font-bold text-white">Multi-Sheet Excel Workbook</h2>
               <p className="text-xs text-slate-400">
-                Structured .XLSX file with dedicated tabs for Cleaned Historical Data, Forecast Predictions, and ABC Rankings.
+                Structured .XLS file with dedicated tabs for Cleaned Historical Data, Forecast Predictions, and ABC Rankings.
               </p>
             </div>
             <button
               onClick={() => handleDownload('excel')}
               disabled={downloadingFormat === 'excel'}
-              className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Download className="w-4 h-4" />
-              <span>{downloadingFormat === 'excel' ? "Generating Excel..." : "Download Excel (.xlsx)"}</span>
+              <span>{downloadingFormat === 'excel' ? "Generating Excel..." : "Download Excel (.xls)"}</span>
             </button>
           </Card>
 
@@ -101,7 +111,7 @@ export default function ReportsPage() {
             <button
               onClick={() => handleDownload('csv')}
               disabled={downloadingFormat === 'csv'}
-              className="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-xs font-bold shadow-lg shadow-purple-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-xs font-bold shadow-lg shadow-purple-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>{downloadingFormat === 'csv' ? "Generating CSV..." : "Download CSV Data"}</span>
