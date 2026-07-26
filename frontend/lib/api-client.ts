@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// Default to internal Next.js Route Handlers (/api) for self-contained Vercel serverless deployment
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
