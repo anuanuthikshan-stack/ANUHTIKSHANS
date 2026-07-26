@@ -1,0 +1,17 @@
+{
+  "name": "anuhtikshans",
+  "version": "1.0.0",
+  "description": "ANUHTIKSHANS - Next-Generation Innovation & Digital Solutions Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "anuhtikshans",
+    "portfolio",
+    "web-application",
+    "vercel"
+  ],
+  "author": "anuanuthikshan-stack",
+  "license": "MIT"
+}
